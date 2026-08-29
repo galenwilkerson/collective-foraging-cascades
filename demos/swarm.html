@@ -100,7 +100,9 @@
     <p class="sub">Agents explore by <b>Lévy flights</b>. When one finds a resource it seeds a
        <b>linear-threshold recruitment cascade</b> (rule <i>a/k&nbsp;&ge;&nbsp;&theta;</i>) that pulls
        neighbours toward the find; crowding then drops <i>a/k</i> below <i>&theta;</i>, so recruitment
-       <b>blocks itself</b> and agents disperse to explore again. This automatic explore/exploit balance
+       <b>blocks itself</b> and agents disperse to explore again. The cascade is the linear-threshold
+       model of <b>social diffusion</b> — a rumour (&ldquo;resource nearby&rdquo;) spreading through the
+       swarm, with blocking as the point where it stifles. This automatic explore/exploit balance
        is, coarse-grained, a <b>reinforcement-learning policy with no learner</b> — watch it emerge below.
        Drag a slider or click a preset to move the swarm across the <b>cascade window</b>: too sparse
        (nothing spreads), just right (efficient recruitment), or too dense (blocking).</p>
