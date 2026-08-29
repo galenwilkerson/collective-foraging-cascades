@@ -6,6 +6,21 @@ learner-free RL."*
 
 > **Status: private.** This repository will be made public on publication of the paper.
 
+## Interactive demos (run in your browser)
+
+- **[Swarm simulation](https://galenwilkerson.github.io/collective-foraging-cascades/swarm.html)** — a
+  faithful browser port of `mobile_cascade.py`: agents explore by Lévy flights, recruit via a
+  linear-threshold cascade, and self-limit through blocking. Sliders for every control, plus presets at
+  the key regimes (below percolation → cascade window → blocking; Brownian vs. Lévy; balanced forager),
+  with live plots of the explore/exploit cycle, cascade bursts, cluster-size criticality, and
+  self-limitation.
+- **[Why clumping is generic](https://galenwilkerson.github.io/collective-foraging-cascades/entropy.html)** —
+  a maximum-entropy toy: drop M targets into K = M cells and watch that random placement is *clumpy*, not
+  even. Run thousands of trials and the empty-cell-fraction distribution piles at e/M ≈ 0.37 while a
+  perfectly even field never appears — the e⁻ᴹ rarity, live (the paper's entropy figure by Monte Carlo).
+
+(Demo source lives in [`demos/`](demos/); the live links above are served from GitHub Pages.)
+
 ## Layout
 
 ```
