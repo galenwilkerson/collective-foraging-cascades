@@ -6,6 +6,26 @@ learner-free RL."*
 
 > **Status: private.** This repository will be made public on publication of the paper.
 
+## The idea
+
+A swarm forages with **one local rule and no central control**. Agents wander by heavy-tailed
+**Lévy flights**; when one encounters a resource it seeds a **linear-threshold recruitment cascade**
+on the proximity graph — a neighbour is pulled in once a large enough *fraction* of *its* neighbours
+is already active (the rule *a/k ≥ θ*). Crowding then drives that fraction back below threshold, so
+recruitment **blocks itself** and agents disperse to explore again. Nothing is tuned to make this
+happen.
+
+<img src="images/mechanism.png" width="640" alt="Explore, recruit to a discovery, then self-limit">
+
+Because a node activates on a *fraction*, cascade size is **non-monotonic** in connectivity: too
+sparse and nothing spreads, too dense and blocking suppresses it — with an efficient **cascade
+window** in between (below, the peak between the percolation and blocking boundaries). Out of this
+single untuned rule fall the classic signatures of collective foraging — recruitment, marginal-value
+patch-leaving, Lévy search, the ideal free distribution — and, coarse-grained, a **reinforcement-learning
+policy with no learner**.
+
+<img src="images/cascade_window.png" width="500" alt="The cascade window: recruitment peaks at intermediate connectivity">
+
 ## Interactive demos (run in your browser)
 
 - **[Swarm simulation](https://galenwilkerson.github.io/collective-foraging-cascades/swarm.html)** — a
