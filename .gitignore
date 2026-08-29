@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+*.swp
+
+# Local output scratch (regenerate from code)
+theory_paper_v3/figures/*.pdf
+theory_paper_v5/figures/*.pdf
