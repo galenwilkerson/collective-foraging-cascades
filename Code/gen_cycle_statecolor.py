@@ -14,7 +14,7 @@ N = float(d["N"]); THETA = float(d["theta"]); ZC_RGG = 4.51; Z_BLOCK = 2.0 / THE
 BURN, W = 200, 45
 FIGS = os.path.normpath(os.path.join(HERE, "..", "theory_paper_v6", "figures"))
 PNG = os.environ.get("SCRATCH_PNG_DIR", "/tmp")
-plt.rcParams.update({"font.size": 13})
+plt.rcParams.update({"font.size": 16})
 
 def sm(x): return np.convolve(x, np.ones(W) / W, "valid")
 
@@ -118,12 +118,12 @@ ax.contour(xc2, yc2, Um, levels=[0], colors="#00b0b0", linewidths=1.2, linestyle
 ax.contour(xc2, yc2, Vm, levels=[0], colors="#b000b0", linewidths=1.2, linestyles="--", zorder=4)
 ax.scatter([fx], [fy], s=150, marker="*", color="k", zorder=8)
 ax.text(fx + 0.7, fy + 0.03, "poised operating point\n(stable focus)", fontsize=9, va="bottom", zorder=8,
-        bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none", alpha=0.75))
+        bbox=dict(boxstyle="round,pad=0.25", fc="white", ec="0.6", alpha=1.0))
 ax.plot([], [], "--", color="#00b0b0", label=r"$\dot z=0$ nullcline"); ax.plot([], [], "--", color="#b000b0", label=r"$\dot a=0$ nullcline")
-ax.legend(loc=("upper left" if MODE == "patches" else "lower right"), fontsize=8, frameon=True, framealpha=0.85)
+ax.legend(loc=("upper left" if MODE == "patches" else "lower right"), fontsize=10.5, frameon=True, framealpha=0.85)
 
 # --- boundaries, labels, legend ---
-for xv, lab in [(ZC_RGG, r"$z_c^{\rm RGG}$"), (Z_BLOCK, r"$2/\theta$")]:
+for xv, lab in [(ZC_RGG, r"$z_c^{\rm RGG}$"), (Z_BLOCK, r"$2/\varphi$")]:
     ax.axvline(xv, color="0.5", ls=":", lw=1.1, zorder=2)
     ax.text(xv, 1.02, lab, ha="center", va="bottom", fontsize=11, color="0.4")
 if MODE != "patches":                                            # cycle-phase labels + swatch key (blended/dom only)
