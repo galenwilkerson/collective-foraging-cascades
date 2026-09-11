@@ -1,35 +1,83 @@
-# Collective foraging from simple recruitment cascades — figure & simulation code
+# Collective foraging from simple recruitment cascades
+### a maximum-entropy path to natural, learner-free reinforcement learning
 
-Simulation code and the scripts that regenerate every figure and reported number in the paper
-*"Collective foraging from simple recruitment cascades: a maximum-entropy path to natural,
-learner-free RL."*
+Simulation code and the scripts that regenerate every figure and reported number in the paper of the
+same name.
 
-> **Status: private.** This repository will be made public on publication of the paper.
+> **What's here.** The model, the figure generators, and the precomputed sweep data — it deliberately
+> does **not** contain the paper source (`main.tex`) or PDFs. An accompanying **interactive demo** runs
+> the whole story live in the browser: **<https://galenwilkerson.github.io/collective_foraging_demo.html>**.
 
 ## The idea
 
-A swarm forages with **one local rule and no central control**. Agents wander by heavy-tailed
-**Lévy flights**; when one encounters a resource it seeds a **linear-threshold recruitment cascade**
-on the proximity graph — a neighbour is pulled in once a large enough *fraction* of *its* neighbours
-is already active (the rule *a/k ≥ θ*). Crowding then drives that fraction back below threshold, so
-recruitment **blocks itself** and agents disperse to explore again. Nothing is tuned to make this
-happen.
+Recruitment is a **contagion**. A swarm forages with **one local rule and no central control**:
+inactive agents wander by heavy-tailed **Lévy** flights, and when one finds a resource it seeds a
+**linear-threshold cascade** — the Granovetter/Watts model built for how rumours and adoption spread on
+networks — **embedded in space** on a proximity (random-geometric) graph. The twist is that being
+recruited means *moving toward whoever recruited you*: **activation moves the node**, so the cascade
+**rewires its own graph**. This is a spatially-embedded **adaptive network** — the swarm sets its own
+connectivity as it runs.
+
+Activation is **fraction-normalized**: a node activates once the fraction of its neighbours that are
+already active clears its threshold, *aᵢ/kᵢ ≥ φ*. That single rule both **spreads** the cascade and
+**stifles** it — as recruits crowd in, degree grows, the active *fraction* falls back below φ, and
+recruitment shuts itself off (**blocking**, the mobile analogue of rumour-stifling). Agents then
+disperse and re-explore. Nothing is tuned to make this happen.
 
 <img src="images/mechanism.png" width="640" alt="Explore, recruit to a discovery, then self-limit">
 
-Because a node activates on a *fraction*, cascade size is **non-monotonic** in connectivity: too
-sparse and nothing spreads, too dense and blocking suppresses it — with an efficient **cascade
-window** in between (below, the peak between the percolation and blocking boundaries). Out of this
-single untuned rule fall the classic signatures of collective foraging — recruitment, marginal-value
-patch-leaving, Lévy search, the ideal free distribution — and, coarse-grained, a **reinforcement-learning
-policy with no learner**.
+Because a node activates on a *fraction*, the same rule draws two boundaries and opens a **cascade
+window** between them:
 
-<img src="images/cascade_window.png" width="500" alt="The cascade window: recruitment peaks at intermediate connectivity">
+- **percolation turns recruitment ON** near the random-geometric-graph threshold, mean degree
+  *z_c^RGG ≈ 4.51* — below it the graph is fragmented and cascades stay local;
+- **degree-blocking turns it OFF** at mean degree *2/φ* — above it high-degree nodes are non-vulnerable
+  and cascades are suppressed.
+
+The result is an **inverted-U**: cascade size is non-monotonic in connectivity, peaking in between. And
+because the swarm's own recruitment sets *z*, the connectivity is **endogenous** — held, untuned, near
+the marginal point. The restoring arrows below the axis show the swarm *self-tuning into the window*:
+too sparse, cascades aggregate and raise *z*; too crowded, blocking disperses and lowers it.
+
+<img src="images/cascade_window_selftune.png" width="560" alt="The cascade window, and the swarm self-tunes into it (restoring arrows below the axis)">
+
+**Self-organized criticality on a mobile lattice.** Poised just below marginal, the swarm runs the
+Bak–Tang–Wiesenfeld sandpile's **drive–avalanche cycle** on a self-reshaping graph: near-critical local
+branching (*σ_local ≈ 0.85*), **scale-free** recruited-cluster sizes, and a damped, **excitable**
+relaxation whose mean flow in the (local-connectivity, active-fraction) plane spirals into a **stable
+focus** — an empirical phase portrait built directly from the running model. This cycle is the paper's
+hero figure: a schematic of the loop beside the measured phase portrait, in the same plane.
+
+<img src="images/cycle_hero.png" width="820" alt="The drive–avalanche cycle: schematic loop beside the measured phase portrait">
+
+The two share an axis — the inverted-U above is this cycle's 1-D shadow, its restoring flow along
+connectivity *z*.
+
+**The elegant coincidences.** Untuned, this one rule reproduces — *together* — behaviours that foraging
+biology documents *separately*: recruitment to discoveries, **marginal-value** patch-leaving,
+**Lévy-then-local** search, and **ideal-free** habitat matching. Coarse-grained, the same rule is a
+**reinforcement-learning policy with no learner** (density-dependent replicator / policy-gradient
+dynamics converging to the ideal free distribution / Nash). These are not accidents but one
+least-committal principle: the resource field the swarm searches and the search it runs are both
+**maximum-entropy** structures, and the swarm runs **two diffusions** — through space (exploration) and
+through the network (recruitment). So it is **one principle wearing three disciplinary faces** —
+collective order (active matter), optimal foraging (ecology), and reinforcement learning (machine
+learning) — unified by **maximum entropy** (where resources sit) plus **maximum caliber** (how to move).
+
+The gains are deliberately **modest and conditional**: recruitment is movement-neutral and beats
+solitary search (by ~15%) only when resources are sparse and clustered, with every communication bit
+priced. The contribution is a **mechanism**, not a performance boast.
 
 ## Interactive demos (run in your browser)
 
+- **[Live phase portrait](https://galenwilkerson.github.io/collective-foraging-cascades/phase_portrait.html)**
+  — the flagship demo (`demos/phase_portrait.html`). A self-organizing swarm on a torus, coloured by node
+  state (explore / recruit / consume / blocked), with the paper's **empirical phase portrait (Fig. 5b)
+  built live** from the running swarm. Watch the story end to end: **contagion → cascade window → SOC
+  drive–avalanche cycle → the elegant coincidences**. Sliders for radius and threshold φ show the
+  cascade window and blocking directly. (Also intended for hosting on `galenwilkerson.github.io`.)
 - **[Swarm simulation](https://galenwilkerson.github.io/collective-foraging-cascades/swarm.html)** — a
-  faithful browser port of `mobile_cascade.py`: agents explore by Lévy flights, recruit via a
+  fuller browser port of `mobile_cascade.py`: agents explore by Lévy flights, recruit via a
   linear-threshold cascade, and self-limit through blocking. Sliders for every control, plus presets at
   the key regimes (below percolation → cascade window → blocking; Brownian vs. Lévy; balanced forager),
   with live plots of the explore/exploit cycle, cascade bursts, cluster-size criticality, and
@@ -41,6 +89,16 @@ policy with no learner**.
 
 (Demo source lives in [`demos/`](demos/); the live links above are served from GitHub Pages.)
 
+## Notation
+
+The current paper uses **φ** for the linear-threshold activation threshold (older drafts wrote *θ*).
+Also: resource coverage *ρ_s*, connectivity density *ρ_r*, Lévy exponent *α*, active fraction *A*,
+branching ratio *σ*. This README follows the current notation (φ).
+
+> **Code drift note.** Several simulation scripts and generators still use the variable name `theta`
+> (and `.npz` keys like `theta`) for the threshold — e.g. `gen_cycle_statecolor.py`, `highd_opt_theta.npz`.
+> These are the same quantity as φ. They are left unrenamed to avoid churn; only the prose is updated.
+
 ## Layout
 
 ```
@@ -49,14 +107,23 @@ Code/
   *_test.py, *_sweep.py …   experiment scripts that produce the sweep data in Code/sweeps/
   gen_*.py                  figure generators (see map below)
   sweeps/                   precomputed sweep outputs (.npz / .csv) the generators read
+demos/                      browser demos (phase_portrait.html, swarm.html, entropy.html) served via Pages
 theory_paper_v6/
-  gen_entropy_fig.py        Fig 3 (target-space entropy) — analytic, no data
-  gen_article_figs.py       Figs 2b, 4, 11, 12 — read Code/sweeps/
-  figures/                  reference PDFs of the figures as they appear in the paper
+  gen_entropy_fig.py        entropy figure — analytic, no data
+  gen_article_figs.py       phase-diagram / local-clusters / FSS / scale-free figs — read Code/sweeps/
+  figures/                  reference PDFs of the figures (v6 snapshot)
+experiments/
+  maxent_caliber/           max-caliber optimum (paper Fig. 12): run_maxent_caliber.py (16-core
+                            parallel single-searcher sweep) + results.npz + replot_stable.py
 ```
 
 Generators keep their original relative paths; run each from the directory it lives in.
 `theory_paper_v3/figures/` and `theory_paper_v5/figures/` are output stubs for a few generators.
+
+> **Paper version.** The canonical current paper is **theory_paper_v11** (kept outside this repo). The
+> reference figures/generators bundled here track the earlier **v6** snapshot plus the current cycle and
+> self-tuning-window generators added since; figure *numbers* below follow the paper and may shift
+> between versions.
 
 ## Requirements
 
@@ -66,22 +133,25 @@ Python 3 with `numpy`, `matplotlib`, and `torch` (PyTorch; the model runs on CPU
 
 | Fig | Generator | Data (in `Code/sweeps/`) / producer |
 |----:|-----------|-------------------------------------|
-| 1  | `Code/gen_invertedu_fig.py`            | `inverted_u_full.csv` ← `inverted_u.py` |
-| 2a | `Code/gen_mechanism_fig.py`            | schematic (no data) |
-| 2b | `theory_paper_v6/gen_article_figs.py` `fig_phase_diagram` | `resource_regimes.npz` ← `resource_regimes.py` |
-| 3  | `theory_paper_v6/gen_entropy_fig.py`   | analytic (exact combinatorics) |
-| 4  | `theory_paper_v6/gen_article_figs.py` `fig_local_clusters` | `local_soc.npz`, `local_soc_levy.npz` ← `local_soc_test.py` |
-| 5  | `Code/gen_threshold_figs.py`           | `blocking_test.py` |
-| 6  | `Code/gen_alpha_regime_fig.py`         | `cost_per_target.py` |
-| 7  | `Code/gen_homeostasis_fig.py`          | self-contained (runs the model) |
-| 8  | `Code/gen_phase_fig.py`                | schematic (no data) |
-| 9  | `Code/gen_patch_lifecycle_fig.py`      | `patch_rw_th*.npz` ← `patch_lifecycle_test.py` |
-| 10 | `Code/gen_ifd_fig.py`                  | `ifd_test.npz` ← `ifd_test.py` |
-| 11 | `theory_paper_v6/gen_article_figs.py` `fig_fss` | `fss_scaling.npz` ← `fss_scaling.py` |
-| 12 | `theory_paper_v6/gen_article_figs.py` `fig_scale_free` | `scale_free_field.npz` ← `scale_free_field.py` |
-| 13 | `Code/gen_supp_expts_fig.py` (panel a) | `local_susceptibility_test.py` |
-| 14 | `Code/gen_supp_expts_fig.py` (panel b) | `levy_field.npz` ← `levy_field_test.py` |
-| Q3 | `Code/gen_q3_ablation_fig.py`          | self-contained (runs the model, coupled vs ablated) |
+| Cascade window (inverted-U) | `Code/gen_invertedu_fig.py`            | `inverted_u_full.csv` ← `inverted_u.py` |
+| **Cascade window + self-tuning arrows (paper Fig. 2)** | `Code/gen_invertedu_selftune_fig.py` | same `inverted_u_full.csv` |
+| Mechanism schematic         | `Code/gen_mechanism_fig.py`            | schematic (no data) — **paper now uses a TikZ source (`fig_mechanism_tikz.tex`), not in this repo** |
+| Phase diagram (when it pays) | `theory_paper_v6/gen_article_figs.py` `fig_phase_diagram` | `resource_regimes.npz` ← `resource_regimes.py` |
+| Target-space entropy        | `theory_paper_v6/gen_entropy_fig.py`   | analytic (exact combinatorics) |
+| Local clusters (SOC)        | `theory_paper_v6/gen_article_figs.py` `fig_local_clusters` | `local_soc.npz`, `local_soc_levy.npz` ← `local_soc_test.py` |
+| Threshold / blocking vs depletion | `Code/gen_threshold_figs.py`     | `blocking_test.py` |
+| α-regime cost               | `Code/gen_alpha_regime_fig.py`         | `cost_per_target.py` |
+| Homeostasis                 | `Code/gen_homeostasis_fig.py`          | self-contained (runs the model) |
+| **Empirical phase portrait / drive–avalanche cycle (hero, paper Fig. 1b)** | `Code/gen_cycle_statecolor.py` | `sweeps/cycle_states.npz` ← `Code/gen_cycle_data.py` |
+| **Cycle schematic (hero, paper Fig. 1a)** | `Code/gen_cycle_schematic.py` | schematic (no data) |
+| Patch lifecycle             | `Code/gen_patch_lifecycle_fig.py`      | `patch_rw_th*.npz` ← `patch_lifecycle_test.py` |
+| Ideal free distribution     | `Code/gen_ifd_fig.py`                  | `ifd_test.npz` ← `ifd_test.py` |
+| FSS scaling                 | `theory_paper_v6/gen_article_figs.py` `fig_fss` | `fss_scaling.npz` ← `fss_scaling.py` |
+| Scale-free field            | `theory_paper_v6/gen_article_figs.py` `fig_scale_free` | `scale_free_field.npz` ← `scale_free_field.py` |
+| Susceptibility (supp.)      | `Code/gen_supp_expts_fig.py` (panel a) | `local_susceptibility_test.py` |
+| Lévy field (supp.)          | `Code/gen_supp_expts_fig.py` (panel b) | `levy_field.npz` ← `levy_field_test.py` |
+| **Max-caliber optimum — search exponent tracks field (paper Fig. 12)** | `experiments/maxent_caliber/replot_stable.py` | `experiments/maxent_caliber/results.npz` ← `run_maxent_caliber.py` |
+| Q3 ablation                 | `Code/gen_q3_ablation_fig.py`          | self-contained (runs the model, coupled vs ablated) |
 
 ## Regenerating
 
