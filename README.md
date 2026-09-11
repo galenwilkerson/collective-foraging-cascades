@@ -70,12 +70,11 @@ priced. The contribution is a **mechanism**, not a performance boast.
 
 ## Interactive demos (run in your browser)
 
-- **[Live phase portrait](https://galenwilkerson.github.io/collective-foraging-cascades/phase_portrait.html)**
-  — the flagship demo (`demos/phase_portrait.html`). A self-organizing swarm on a torus, coloured by node
-  state (explore / recruit / consume / blocked), with the paper's **empirical phase portrait (Fig. 5b)
-  built live** from the running swarm. Watch the story end to end: **contagion → cascade window → SOC
-  drive–avalanche cycle → the elegant coincidences**. Sliders for radius and threshold φ show the
-  cascade window and blocking directly. (Also intended for hosting on `galenwilkerson.github.io`.)
+The flagship demo is the **interactive in-browser swarm** linked at the top
+(<https://galenwilkerson.github.io/collective_foraging_demo.html>) — one running swarm builds the whole
+story live: **contagion → cascade window → SOC drive–avalanche cycle → the elegant coincidences**. The
+demos below are lighter, single-purpose companions.
+
 - **[Swarm simulation](https://galenwilkerson.github.io/collective-foraging-cascades/swarm.html)** — a
   fuller browser port of `mobile_cascade.py`: agents explore by Lévy flights, recruit via a
   linear-threshold cascade, and self-limit through blocking. Sliders for every control, plus presets at
