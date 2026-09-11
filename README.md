@@ -73,14 +73,8 @@ priced. The contribution is a **mechanism**, not a performance boast.
 The flagship demo is the **interactive in-browser swarm** linked at the top
 (<https://galenwilkerson.github.io/collective_foraging_demo.html>) — one running swarm builds the whole
 story live: **contagion → cascade window → SOC drive–avalanche cycle → the elegant coincidences**. The
-demos below are lighter, single-purpose companions.
+demo below is a lighter, single-purpose companion.
 
-- **[Swarm simulation](https://galenwilkerson.github.io/collective-foraging-cascades/swarm.html)** — a
-  fuller browser port of `mobile_cascade.py`: agents explore by Lévy flights, recruit via a
-  linear-threshold cascade, and self-limit through blocking. Sliders for every control, plus presets at
-  the key regimes (below percolation → cascade window → blocking; Brownian vs. Lévy; balanced forager),
-  with live plots of the explore/exploit cycle, cascade bursts, cluster-size criticality, and
-  self-limitation.
 - **[Why clumping is generic](https://galenwilkerson.github.io/collective-foraging-cascades/entropy.html)** —
   a maximum-entropy toy: drop M targets into K = M cells and watch that random placement is *clumpy*, not
   even. Run thousands of trials and the empty-cell-fraction distribution piles at e/M ≈ 0.37 while a
