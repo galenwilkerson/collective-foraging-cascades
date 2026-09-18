@@ -100,7 +100,7 @@ Code/
   *_test.py, *_sweep.py …   experiment scripts that produce the sweep data in Code/sweeps/
   gen_*.py                  figure generators (see map below)
   sweeps/                   precomputed sweep outputs (.npz / .csv) the generators read
-demos/                      browser demos (phase_portrait.html, swarm.html, entropy.html) served via Pages
+demos/                      browser demos (collective_foraging_demo.html, phase_portrait.html, entropy.html) served via Pages
 theory_paper_v6/
   gen_entropy_fig.py        entropy figure — analytic, no data
   gen_article_figs.py       phase-diagram / local-clusters / FSS / scale-free figs — read Code/sweeps/
