@@ -113,10 +113,15 @@ experiments/
 Generators keep their original relative paths; run each from the directory it lives in.
 `theory_paper_v3/figures/` and `theory_paper_v5/figures/` are output stubs for a few generators.
 
-> **Paper version.** The canonical current paper is **theory_paper_v11** (kept outside this repo). The
-> reference figures/generators bundled here track the earlier **v6** snapshot plus the current cycle and
-> self-tuning-window generators added since; figure *numbers* below follow the paper and may shift
-> between versions.
+> **Paper version.** The canonical current paper is **theory_paper_v14** (kept outside this repo). The
+> reference figures/generators bundled here track the earlier **v6** snapshot plus generators added
+> since (the cycle and self-tuning-window figures, and the v14 criticality rework in
+> `theory_paper_v14/gen/`); figure *numbers* below follow the paper and may shift between versions.
+> The v14 criticality suite is standardized on Lévy exploration (stable index α=1.5): the canonical
+> per-avalanche branching data is `Code/sweeps/local_branching_levy.npz` (σ_local ≈ 0.83–0.99 across φ;
+> the α=1.0 run is preserved as `local_branching_levy_a10.npz`). The old movement-mode "scale-free"
+> figure was retired (a simulator-bug artifact, also step-scale-confounded); Fig 4 is now the
+> recruitment-cascade avalanche-size distribution (`make_recruit_cluster.py`).
 
 ## Requirements
 
