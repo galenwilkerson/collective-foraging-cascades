@@ -4,10 +4,12 @@ near-critical) vs phi=0.35 (sigma_local~0.83, subcritical). Overlaid with the me
 critical-branching reference P(S>=s) ~ s^(-1/2) (avalanche PDF tau=3/2). The exponent tracks
 sigma_local; finite-size cutoff at s=N limits its precision, which is why sigma_local (not this slope)
 is the primary criticality measure. Data: Code/sweeps/local_branching_levy.npz (canonical alpha=1.5)."""
-import numpy as np, matplotlib
+import os, numpy as np, matplotlib
 matplotlib.use("Agg"); import matplotlib.pyplot as plt
-NPZ = "/home/galen/Dropbox_2025/Dropbox/projects/flocking_LTM/Code/sweeps/local_branching_levy.npz"
-OUT = "/home/galen/Dropbox_2025/Dropbox/projects/flocking_LTM/theory_paper_v14/figures/fig_recruit_cluster.pdf"
+REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+NPZ = os.path.join(REPO, "Code", "sweeps", "local_branching_levy.npz")
+OUT = os.path.join(REPO, "theory_paper_v14", "figures", "fig_recruit_cluster.pdf")
+os.makedirs(os.path.dirname(OUT), exist_ok=True)
 d = np.load(NPZ)
 N = int(d["N"][0])
 FITLO, FITHI = 3, 50   # scaling window: above the s=2 head, below the finite-size (s->N) pile-up

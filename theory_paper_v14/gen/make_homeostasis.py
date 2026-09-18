@@ -7,7 +7,8 @@ import numpy as np, matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 plt.rcParams.update({"font.size": 13, "axes.titlesize": 12.5, "axes.labelsize": 13,
                      "xtick.labelsize": 12, "ytick.labelsize": 11.5, "legend.fontsize": 11})
-sys.path.insert(0, "/home/galen/Dropbox_2025/Dropbox/projects/flocking_LTM/Code")
+REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+sys.path.insert(0, os.path.join(REPO, "Code"))
 from mobile_cascade import MobileCascade, MobileCascadeConfig
 
 
@@ -68,7 +69,8 @@ ax[1].legend(fontsize=9.5, loc="lower left", framealpha=0.95)
 ax[1].set_title("(b)", loc="left", fontweight="bold", fontsize=13)
 
 fig.tight_layout()
-out = "/home/galen/Dropbox_2025/Dropbox/projects/flocking_LTM/theory_paper_v14/figures/fig_homeostasis.pdf"
+out = os.path.join(REPO, "theory_paper_v14", "figures", "fig_homeostasis.pdf")
+os.makedirs(os.path.dirname(out), exist_ok=True)
 fig.savefig(out)
 print("wrote", out)
 print("recruiting corr range: %.2f..%.2f ; ablated %.2f" % (min(means), max(means), abl_m))

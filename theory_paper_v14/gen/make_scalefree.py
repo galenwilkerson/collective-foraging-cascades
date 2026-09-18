@@ -2,10 +2,12 @@
 tau_active, both vs resource cluster-size exponent beta_res. Matched panel style: markers + line +
 shaded 95% bootstrap-CI band. tau point = per-replica median (inside its CI; the pooled single-fit
 sits outside the CI for 2/3 points, which is why a band on it would look broken)."""
-import numpy as np, matplotlib
+import os, numpy as np, matplotlib
 matplotlib.use("Agg"); import matplotlib.pyplot as plt
-NPZ = "/home/galen/Dropbox_2025/Dropbox/projects/flocking_LTM/Code/sweeps/scalefree_v14.npz"
-OUT = "/home/galen/Dropbox_2025/Dropbox/projects/flocking_LTM/theory_paper_v14/figures/fig_scalefree.pdf"
+REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+NPZ = os.path.join(REPO, "Code", "sweeps", "scalefree_v14.npz")
+OUT = os.path.join(REPO, "theory_paper_v14", "figures", "fig_scalefree.pdf")
+os.makedirs(os.path.dirname(OUT), exist_ok=True)
 d = np.load(NPZ, allow_pickle=True)
 s = d["summary"]; beta = s[:, 1]; ratio = s[:, 2]
 hr = d["harvest_ratio_reps"]; tr = d["tau_reps"]

@@ -10,13 +10,14 @@ premium.
 Pools q4_recheck.csv + q4_confirm.csv (two independent seeds). Ratio = baseline / recruit, paired
 within context. -> theory_paper/fig_alpha_regime.pdf
 """
-import numpy as np, pandas as pd, matplotlib
+import os, numpy as np, pandas as pd, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 plt.rcParams.update({"font.size": 13, "axes.titlesize": 13, "axes.labelsize": 13,
                      "xtick.labelsize": 12, "ytick.labelsize": 12, "legend.fontsize": 11})
 
-D = "/home/galen/Dropbox_2025/Dropbox/projects/flocking_LTM/Code/sweeps/"
+HERE = os.path.dirname(os.path.abspath(__file__))
+D = os.path.join(HERE, "sweeps") + os.sep
 rng = np.random.default_rng(0)
 
 def load(f):
@@ -78,7 +79,8 @@ ax[1].set_title("(b)", loc="left", fontweight="bold", fontsize=13)
 
 # (suptitle omitted; the LaTeX caption carries the interpretation)
 fig.tight_layout()
-out = "/home/galen/Dropbox_2025/Dropbox/projects/flocking_LTM/theory_paper_v3/figures/fig_alpha_regime.pdf"
+out = os.path.join(os.path.dirname(HERE), "theory_paper_v3", "figures", "fig_alpha_regime.pdf")
+os.makedirs(os.path.dirname(out), exist_ok=True)
 fig.savefig(out); print("wrote", out)
 
 # print the numbers going into the caption

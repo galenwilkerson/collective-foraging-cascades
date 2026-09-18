@@ -65,6 +65,8 @@ ax[1].set_title("(b)", loc="left", fontweight="bold", fontsize=13)
 
 # (suptitle omitted; the LaTeX caption carries the interpretation)
 fig.tight_layout()
-out = "/home/galen/Dropbox_2025/Dropbox/projects/flocking_LTM/theory_paper_v3/figures/fig_homeostasis.pdf"
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+out = os.path.join(REPO, "theory_paper_v3", "figures", "fig_homeostasis.pdf")
+os.makedirs(os.path.dirname(out), exist_ok=True)
 fig.savefig(out); print("wrote", out)
 print("recruiting corr range: %.2f..%.2f ; ablated %.2f" % (min(means), max(means), abl_m))
