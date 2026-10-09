@@ -9,12 +9,12 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-d = np.load(os.path.join(HERE, "sweeps", "cycle_states.npz"))
+d = np.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), "sweeps", "cycle_states.npz"))
 N = float(d["N"]); THETA = float(d["theta"]); ZC_RGG = 4.51; Z_BLOCK = 2.0 / THETA
 BURN, W = 200, 45
-FIGS = os.path.normpath(os.path.join(HERE, "..", "theory_paper_v6", "figures"))
+FIGS = os.path.join(HERE, "figures"); os.makedirs(FIGS, exist_ok=True)
 PNG = os.environ.get("SCRATCH_PNG_DIR", "/tmp")
-plt.rcParams.update({"font.size": 16})
+plt.rcParams.update({"font.size": 13})
 
 def sm(x): return np.convolve(x, np.ones(W) / W, "valid")
 
@@ -106,24 +106,56 @@ try:
 except Exception as e:
     print("streamplot fallback:", e)
 
-# --- nullclines (dz=0 cyan, da=0 magenta) + fixed point (stable focus = poised rest point) ---
+# --- nullclines (dz=0 cyan, da=0 magenta) + fixed point = their crossing (the swirl centre/stable focus) ---
 from scipy.ndimage import gaussian_filter
 occ_ok = C2 > 20
 Uf, Vf = gaussian_filter(U, 0.8), gaussian_filter(V, 0.8)
-Ygrid = np.repeat(np.array(yc2)[:, None], len(xc2), axis=1)   # the focus is the swirl centre (nullcline
-sp2 = np.hypot(Uf, Vf); sp2 = np.where(occ_ok & (Ygrid > 0.20), sp2, np.inf)  # crossing), above the rest band
-fj, fi = np.unravel_index(np.argmin(sp2), sp2.shape); fx, fy = xc2[fi], yc2[fj]
 Um, Vm = np.where(occ_ok, Uf, np.nan), np.where(occ_ok, Vf, np.nan)
-ax.contour(xc2, yc2, Um, levels=[0], colors="#00b0b0", linewidths=1.2, linestyles="--", zorder=4)
-ax.contour(xc2, yc2, Vm, levels=[0], colors="#b000b0", linewidths=1.2, linestyles="--", zorder=4)
+cz = ax.contour(xc2, yc2, Um, levels=[0], colors="#00b0b0", linewidths=1.2, linestyles="--", zorder=4)
+ca = ax.contour(xc2, yc2, Vm, levels=[0], colors="#b000b0", linewidths=1.2, linestyles="--", zorder=4)
+
+# stable focus = where the mean flow VANISHES (centre of circulation), found on a fine interpolated
+# grid over the circulating band (occupied; above the explore/rest band, below the recruit-rich top).
+from scipy.interpolate import RegularGridInterpolator
+yc2a, xc2a = np.asarray(yc2), np.asarray(xc2)
+iu = RegularGridInterpolator((yc2a, xc2a), Uf, bounds_error=False, fill_value=np.nan)
+iv = RegularGridInterpolator((yc2a, xc2a), Vf, bounds_error=False, fill_value=np.nan)
+im = RegularGridInterpolator((yc2a, xc2a), occ_ok.astype(float), bounds_error=False, fill_value=0.0)
+gx = np.linspace(xc2a[0], xc2a[-1], 400); gy = np.linspace(0.25, 0.75, 300)
+GX, GY = np.meshgrid(gx, gy)
+Pq = np.column_stack([GY.ravel(), GX.ravel()])
+spd = np.hypot(iu(Pq), iv(Pq)).reshape(GX.shape)
+spd = np.where(im(Pq).reshape(GX.shape) > 0.5, spd, np.inf)
+fj = np.unravel_index(np.nanargmin(spd), spd.shape)
+fx, fy = GX[fj], GY[fj]                                       # flow-vanishing reference
+# the focus is, by definition, the nullcline crossing: snap to the exact zdot=0 x Adot=0 contour
+# intersection nearest the flow-vanishing point, so the star sits dead-on the crossing.
+def _poly(cs): return [np.asarray(p.vertices) for p in cs.get_paths() if len(p.vertices) > 1]
+def _xsegs(aa, bb):
+    out = []
+    for A in aa:
+        for B in bb:
+            for i in range(len(A) - 1):
+                p1 = A[i]; d1 = A[i + 1] - A[i]
+                for j in range(len(B) - 1):
+                    p3 = B[j]; d2 = B[j + 1] - B[j]
+                    den = d1[0] * d2[1] - d1[1] * d2[0]
+                    if abs(den) < 1e-12: continue
+                    t = ((p3[0]-p1[0])*d2[1]-(p3[1]-p1[1])*d2[0])/den
+                    u = ((p3[0]-p1[0])*d1[1]-(p3[1]-p1[1])*d1[0])/den
+                    if 0 <= t <= 1 and 0 <= u <= 1: out.append(p1 + t*d1)
+    return np.array(out)
+_X = _xsegs(_poly(cz), _poly(ca))
+if len(_X):
+    fx, fy = _X[np.argmin(np.hypot(_X[:, 0] - fx, _X[:, 1] - fy))]
 ax.scatter([fx], [fy], s=150, marker="*", color="k", zorder=8)
-ax.text(fx + 0.7, fy + 0.03, "poised operating point\n(stable focus)", fontsize=9, va="bottom", zorder=8,
-        bbox=dict(boxstyle="round,pad=0.25", fc="white", ec="0.6", alpha=1.0))
-ax.plot([], [], "--", color="#00b0b0", label=r"$\dot z=0$ nullcline"); ax.plot([], [], "--", color="#b000b0", label=r"$\dot a=0$ nullcline")
-ax.legend(loc=("upper left" if MODE == "patches" else "lower right"), fontsize=10.5, frameon=True, framealpha=0.85)
+ax.text(fx + 0.7, fy + 0.03, "near-critical operating point\n(stable focus)", fontsize=9, va="bottom", zorder=8,
+        bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none", alpha=0.75))
+ax.plot([], [], "--", color="#00b0b0", label=r"$\dot z=0$ nullcline"); ax.plot([], [], "--", color="#b000b0", label=r"$\dot A=0$ nullcline")
+ax.legend(loc=("upper left" if MODE == "patches" else "lower right"), fontsize=8, frameon=True, framealpha=0.85)
 
 # --- boundaries, labels, legend ---
-for xv, lab in [(ZC_RGG, r"$z_c^{\rm RGG}$"), (Z_BLOCK, r"$2/\varphi$")]:
+for xv, lab in [(ZC_RGG, r"$z_c^{\rm RGG}$"), (Z_BLOCK, r"$2/\phi$")]:
     ax.axvline(xv, color="0.5", ls=":", lw=1.1, zorder=2)
     ax.text(xv, 1.02, lab, ha="center", va="bottom", fontsize=11, color="0.4")
 if MODE != "patches":                                            # cycle-phase labels + swatch key (blended/dom only)
@@ -140,7 +172,7 @@ if MODE != "patches":                                            # cycle-phase l
 
 ax.set_xlim(0, XMAX); ax.set_ylim(0, 1)
 ax.set_xlabel(r"connectivity  $z_{\rm local}$  (mean degree of active agents)")
-ax.set_ylabel("active fraction  (recruited $+$ consuming)")
+ax.set_ylabel("active fraction  $A$  (recruited $+$ consuming)")
 fig.tight_layout()
 NAME = {"patches": "fig_cycle_flow_patches", "dom": "fig_cycle_flow_dom", "blend": "fig_cycle_flow"}[MODE]
 fig.savefig(os.path.join(FIGS, NAME + ".pdf"), bbox_inches="tight", dpi=300)  # 300 dpi for the rasterized layer

@@ -52,28 +52,52 @@ def components(adj, active):
 
 
 @torch.no_grad()
+def tick_stats(lab, gidx, deg, N, big):
+    """Vectorized per-tick cascade statistics (replaces the per-component Python loop).
+    Returns (sizes, offspring, parents, local_deg, replica_idx) for the cascaded components this tick:
+    components with size>=2, a recruitment round (lastgen>=1), and parents>0 -- identical criteria to the
+    original loop. Uses global component ids cg=b*N+lab so all replicas are handled at once via bincount."""
+    B = lab.shape[0]
+    dev = lab.device
+    am = lab >= 0                                                # active nodes
+    b_idx = torch.arange(B, device=dev).view(B, 1).expand_as(lab)
+    cg = (b_idx * N + lab)[am]                                   # (M,) global component id per active node
+    gi = gidx[am]                                               # (M,) generation index (may be -1)
+    dg = deg[am].to(torch.float32)
+    BN = B * N
+    size = torch.bincount(cg, minlength=BN)
+    seeds = torch.bincount(cg[gi == 0], minlength=BN)
+    lastgen = torch.full((BN,), -1, device=dev, dtype=gi.dtype)
+    lastgen = lastgen.scatter_reduce(0, cg, gi, reduce="amax", include_self=True)
+    is_last = gi == lastgen[cg]                                 # node is in its component's final generation
+    lastgen_c = torch.bincount(cg[is_last], minlength=BN)
+    degsum = torch.bincount(cg, weights=dg, minlength=BN)
+    keep = (size >= 2) & (lastgen >= 1) & ((size - lastgen_c) > 0)
+    comp = keep.nonzero(as_tuple=False).squeeze(1)
+    sizes = size[comp].to(torch.float32)
+    offspring = (size[comp] - seeds[comp]).to(torch.float32)
+    parents = (size[comp] - lastgen_c[comp]).to(torch.float32)
+    local_deg = degsum[comp] / sizes
+    rep = (comp // N)
+    return sizes, offspring, parents, local_deg, rep
+
+
+@torch.no_grad()
 def run_setting(theta, args):
-    cfg = MobileCascadeConfig(B=args.B, N=args.N, K=args.K, rho_r=args.rho_r, phi=args.phi,
+    cfg = MobileCascadeConfig(B=args.B, N=args.N, K=args.K, L=args.L, rho_r=args.rho_r, phi=args.phi,
                               theta=theta, step=args.step, pull=args.pull,
                               consumption=args.consumption, capacity=args.capacity,
-                              converge=True, seed=args.seed, device="cpu",
-                              levy_alpha=args.levy, exploit_step=args.exploit_step)
+                              converge=True, seed=args.seed, device=args.device,
+                              levy_alpha=args.levy, exploit_step=args.exploit_step,
+                              clump_count=args.clump_count, clump_radius=args.clump_radius,
+                              clump_beta=args.clump_beta)
     sim = MobileCascade(cfg)
     sim._record_generations = True
     t0 = int((1.0 - args.tail) * args.T)
 
-    # per-tick accumulators for the two branching estimators + auxiliaries
-    off_sum = 0.0        # sum_c (size_c - seeds_c)  -- offspring, cascaded clusters
-    par_sum = 0.0        # sum_c (size_c - lastgen_c) -- parents,   cascaded clusters
+    # vectorized accumulators: append per-tick device tensors, concatenate once at the end
+    S, O, P, Dg, R = [], [], [], [], []
     sigma_swarm = []     # model's own per-tick sigma (the ~0.08 estimator), tick means
-    per_aval_sigma = []  # per-avalanche sigma for large avalanches (size>=args.big), for a distribution
-    local_deg = []       # mean degree inside cascaded clusters
-    all_sizes = []       # cascaded-cluster sizes (for tau)
-    nonbranch_frac = []  # fraction of active agents that are seeds-that-recruited-nobody or blocked-in
-
-    rep_off = np.zeros(args.B)   # per-REPLICA offspring / parents totals (replicas are independent)
-    rep_par = np.zeros(args.B)   # -> honest bootstrap CI over independent replicas
-
     for t in range(args.T):
         sim.step()
         if t < t0:
@@ -83,34 +107,30 @@ def run_setting(theta, args):
         active = sim._active_state
         deg = adj.sum(dim=2)                          # (B,N)
         lab = components(adj, active)                 # (B,N)
-        # which generation each active node belongs to: gidx[b,i] = r
-        gidx = torch.full_like(lab, -1)
+        gidx = torch.full_like(lab, -1)               # generation of each active node (gidx[b,i]=r)
         for r, g in enumerate(gens):
             gidx[g] = r
         sigma_swarm.append(float(sim._sigma.mean()))
-        for b in range(args.B):
-            labs = lab[b]
-            for cid in torch.unique(labs[labs >= 0]).tolist():
-                mask = labs == cid
-                size = int(mask.sum())
-                if size < 2:
-                    continue                          # size-1 = seed recruited nobody; no branching info
-                gi = gidx[b][mask]
-                seeds_c = int((gi == 0).sum())
-                lastgen = int(gi.max())
-                lastgen_c = int((gi == lastgen).sum())
-                if lastgen == 0:
-                    continue                          # all seeds, no recruitment round -> not a cascade
-                offspring = size - seeds_c            # every non-seed node was recruited
-                parents = size - lastgen_c            # all generations except the final one
-                if parents <= 0:
-                    continue
-                off_sum += offspring; par_sum += parents
-                rep_off[b] += offspring; rep_par[b] += parents
-                all_sizes.append(size)
-                local_deg.append(float(deg[b][mask].float().mean()))
-                if size >= args.big:
-                    per_aval_sigma.append(offspring / parents)
+        s, o, p, d, rp = tick_stats(lab, gidx, deg, args.N, args.big)
+        if s.numel():
+            S.append(s); O.append(o); P.append(p); Dg.append(d); R.append(rp)
+
+    if S:
+        sizes = torch.cat(S).cpu().numpy().astype(float)
+        off_np = torch.cat(O).cpu().numpy().astype(float)
+        par_np = torch.cat(P).cpu().numpy().astype(float)
+        rep_np = torch.cat(R).cpu().numpy().astype(int)
+        off_sum = float(off_np.sum()); par_sum = max(float(par_np.sum()), 1e-9)
+        rep_off = np.bincount(rep_np, weights=off_np, minlength=args.B)
+        rep_par = np.bincount(rep_np, weights=par_np, minlength=args.B)
+        big_mask = sizes >= args.big
+        per_aval_sigma = off_np[big_mask] / np.maximum(par_np[big_mask], 1e-9)
+        local_deg = torch.cat(Dg).cpu().numpy().tolist()
+    else:
+        sizes = np.array([]); off_sum, par_sum = 0.0, 1e-9
+        rep_off = np.zeros(args.B); rep_par = np.zeros(args.B)
+        per_aval_sigma = np.array([]); local_deg = []
+    all_sizes = sizes
 
     off_sum = max(off_sum, 0.0); par_sum = max(par_sum, 1e-9)
     sigma_aval = off_sum / par_sum
@@ -161,6 +181,14 @@ def main():
     ap.add_argument("--tail", type=float, default=0.5)
     ap.add_argument("--rho_r", type=float, default=3.0)
     ap.add_argument("--phi", type=float, default=0.05)
+    ap.add_argument("--L", type=float, default=800.0)
+    ap.add_argument("--device", type=str, default="cpu")
+    ap.add_argument("--clump-count", type=int, default=None, dest="clump_count",
+                    help="sources in this many spatial clumps (patchy field); None = uniform")
+    ap.add_argument("--clump-radius", type=float, default=40.0, dest="clump_radius")
+    ap.add_argument("--clump-beta", type=float, default=None, dest="clump_beta",
+                    help="if set, scale-free clumped field (Pareto clump weights, exponent ~beta)")
+    ap.add_argument("--threads", type=int, default=0, help="torch CPU threads (0 = leave default)")
     ap.add_argument("--thetas", type=float, nargs="+", default=[0.20, 0.35])
     ap.add_argument("--step", type=float, default=20.0)
     ap.add_argument("--pull", type=float, default=0.1)
@@ -174,6 +202,8 @@ def main():
                     default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "sweeps"))
     ap.add_argument("--tag", type=str, default="local_branching")
     args = ap.parse_args()
+    if args.threads > 0:
+        torch.set_num_threads(args.threads)
 
     mode = "Levy(a=%.2f)" % args.levy if args.levy is not None else "random walk"
     print(f"local branching: N={args.N} K={args.K} rho_r={args.rho_r} phi={args.phi} "
