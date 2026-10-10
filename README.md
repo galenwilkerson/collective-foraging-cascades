@@ -136,6 +136,8 @@ Python 3 with `numpy`, `matplotlib`, and `torch` (PyTorch; the model runs on CPU
 | Mechanism schematic         | `Code/gen_mechanism_fig.py`            | schematic (no data) — **paper now uses a TikZ source (`fig_mechanism_tikz.tex`), not in this repo** |
 | Phase diagram (when it pays) | `theory_paper_v6/gen_article_figs.py` `fig_phase_diagram` | `resource_regimes.npz` ← `resource_regimes.py` |
 | Target-space entropy        | `theory_paper_v6/gen_entropy_fig.py`   | analytic (exact combinatorics) |
+| **Resource-field spectrum: one interaction sign sweeps regular→CSR→clustered (SI)** | `Code/gen_beta_spectrum_fig.py` | analytic (Metropolis Gibbs point process, no data) |
+| **Sparsity amplifies the effective clustering β_eff ~ log(1/density) (SI)** | `Code/gen_beta_sparsity_fig.py` | analytic (Thomas cluster process, no data) |
 | Local clusters (SOC)        | `theory_paper_v6/gen_article_figs.py` `fig_local_clusters` | `local_soc.npz`, `local_soc_levy.npz` ← `local_soc_test.py` |
 | Threshold / blocking vs depletion | `Code/gen_threshold_figs.py`     | `blocking_test.py` |
 | α-regime cost               | `Code/gen_alpha_regime_fig.py`         | `cost_per_target.py` |
