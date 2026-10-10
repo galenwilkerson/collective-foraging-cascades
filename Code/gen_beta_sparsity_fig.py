@@ -71,13 +71,13 @@ for mu in MUS:
     A = np.vstack([xs, np.ones_like(xs)]).T
     slope, intc = np.linalg.lstsq(A, ys, rcond=None)[0]
     fit_lines.append((mu, slope, intc))
-    ax.errorbar(xs, ys, yerr=yerr, fmt="o", ms=5, color=COLORS[mu], capsize=2,
+    ax.errorbar(xs, ys, yerr=yerr, fmt="o-", ms=5, lw=1.6, color=COLORS[mu], capsize=2,
                 label=rf"$\mu={mu}$  (slope ${slope:.2f}$)")
-    # analytic prediction: beta_eff = log(mu) - log(N) - log(pi r0^2) = log(mu) - log(pi r0^2) + x
-    pred = np.log(mu) - np.log(np.pi * R0 ** 2) + xs
-    ax.plot(xs, pred, "--", color=COLORS[mu], lw=1.2, alpha=0.7)
+    # slope-1 reference, anchored at each series' first (densest) data point
+    pred = ys[0] + (xs - xs[0])
+    ax.plot(xs, pred, "--", color=COLORS[mu], lw=1.1, alpha=0.6)
 
-ax.plot([], [], "k--", lw=1.2, alpha=0.7, label="analytic (slope 1)")
+ax.plot([], [], "k--", lw=1.1, alpha=0.6, label="slope-1 reference")
 ax.set_xlabel(r"$\log(1/\mathrm{density})$  (sparser $\rightarrow$)")
 ax.set_ylabel(r"effective clustering strength $\beta_{\rm eff}=\log(\langle\mathcal{C}\rangle/\langle\mathcal{C}\rangle_{\rm CSR})$")
 ax.set_title("Sparsity amplifies the effective clustering strength", fontsize=11)

@@ -149,7 +149,7 @@ _X = _xsegs(_poly(cz), _poly(ca))
 if len(_X):
     fx, fy = _X[np.argmin(np.hypot(_X[:, 0] - fx, _X[:, 1] - fy))]
 ax.scatter([fx], [fy], s=150, marker="*", color="k", zorder=8)
-ax.text(fx + 0.7, fy + 0.03, "near-critical operating point\n(stable focus)", fontsize=9, va="bottom", zorder=8,
+ax.text(fx + 0.7, fy + 0.03, "near-critical operating point\n(stable fixed point)", fontsize=9, va="bottom", zorder=8,
         bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none", alpha=0.75))
 ax.plot([], [], "--", color="#00b0b0", label=r"$\dot z=0$ nullcline"); ax.plot([], [], "--", color="#b000b0", label=r"$\dot A=0$ nullcline")
 ax.legend(loc=("upper left" if MODE == "patches" else "lower right"), fontsize=8, frameon=True, framealpha=0.85)
