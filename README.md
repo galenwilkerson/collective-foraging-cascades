@@ -1,5 +1,5 @@
 # Collective foraging from simple recruitment cascades
-### a maximum-entropy path to natural, learner-free reinforcement learning
+### percolating recruitment cascades coupled to a maximum-entropy field
 
 Simulation code and the scripts that regenerate every figure and reported number in the paper of the
 same name.
@@ -55,14 +55,12 @@ connectivity *z*.
 
 **The elegant coincidences.** Untuned, this one rule reproduces — *together* — behaviours that foraging
 biology documents *separately*: recruitment to discoveries, **marginal-value** patch-leaving,
-**Lévy-then-local** search, and **ideal-free** habitat matching. Coarse-grained, the same rule is a
-**reinforcement-learning policy with no learner** (density-dependent replicator / policy-gradient
-dynamics converging to the ideal free distribution / Nash). These are not accidents but one
+**Lévy-then-local** search, and **reward-proportional** patch allocation. These are not accidents but one
 least-committal principle: the resource field the swarm searches and the search it runs are both
 **maximum-entropy** structures, and the swarm runs **two diffusions** — through space (exploration) and
-through the network (recruitment). So it is **one principle wearing three disciplinary faces** —
-collective order (active matter), optimal foraging (ecology), and reinforcement learning (machine
-learning) — unified by **maximum entropy** (where resources sit) plus **maximum caliber** (how to move).
+through the network (recruitment). So it is **one principle wearing two disciplinary faces** —
+collective order (active matter) and optimal foraging (ecology) — unified by **maximum entropy**
+(where resources sit) plus **maximum caliber** (how to move).
 
 The gains are deliberately **modest and conditional**: recruitment is movement-neutral and beats
 solitary search (by ~15%) only when resources are sparse and clustered, with every communication bit
@@ -145,7 +143,7 @@ Python 3 with `numpy`, `matplotlib`, and `torch` (PyTorch; the model runs on CPU
 | **Empirical phase portrait / drive–avalanche cycle (hero, paper Fig. 1b)** | `Code/gen_cycle_statecolor.py` | `sweeps/cycle_states.npz` ← `Code/gen_cycle_data.py` |
 | **Cycle schematic (hero, paper Fig. 1a)** | `Code/gen_cycle_schematic.py` | schematic (no data) |
 | Patch lifecycle             | `Code/gen_patch_lifecycle_fig.py`      | `patch_rw_th*.npz` ← `patch_lifecycle_test.py` |
-| Ideal free distribution     | `Code/gen_ifd_fig.py`                  | `ifd_test.npz` ← `ifd_test.py` |
+| Reward-proportional allocation | `Code/gen_ifd_fig.py`               | `ifd_test.npz` ← `ifd_test.py` |
 | FSS scaling                 | `theory_paper_v6/gen_article_figs.py` `fig_fss` | `fss_scaling.npz` ← `fss_scaling.py` |
 | Scale-free field            | `theory_paper_v6/gen_article_figs.py` `fig_scale_free` | `scale_free_field.npz` ← `scale_free_field.py` |
 | Susceptibility (supp.)      | `Code/gen_supp_expts_fig.py` (panel a) | `local_susceptibility_test.py` |
