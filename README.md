@@ -102,19 +102,17 @@ demos/                      browser demos (collective_foraging_demo.html, phase_
 theory_paper_v6/
   gen_entropy_fig.py        entropy figure — analytic, no data
   gen_article_figs.py       phase-diagram / local-clusters / FSS / scale-free figs — read Code/sweeps/
-  figures/                  reference PDFs of the figures (v6 snapshot)
+  figures/                  output dir for regenerated figures (PDFs not committed)
 experiments/
   maxent_caliber/           max-caliber optimum (paper Fig. 12): run_maxent_caliber.py (16-core
                             parallel single-searcher sweep) + results.npz + replot_stable.py
 ```
 
 Generators keep their original relative paths; run each from the directory it lives in.
-`theory_paper_v3/figures/` and `theory_paper_v5/figures/` are output stubs for a few generators.
 
-> **Paper version.** The canonical current paper is **theory_paper_v14** (kept outside this repo). The
-> reference figures/generators bundled here track the earlier **v6** snapshot plus generators added
-> since (the cycle and self-tuning-window figures, and the v14 criticality rework in
-> `theory_paper_v14/gen/`); figure *numbers* below follow the paper and may shift between versions.
+> **Figure provenance.** The generators bundled here span the figure set used in the paper; some live in
+> `theory_paper_v6/` (an earlier figure-generation snapshot) and `theory_paper_v14/gen/` (the criticality
+> rework). Figure *numbers* below follow the paper and may shift between revisions.
 > The v14 criticality suite is standardized on Lévy exploration (stable index α=1.5): the canonical
 > per-avalanche branching data is `Code/sweeps/local_branching_levy.npz` (σ_local ≈ 0.83–0.99 across φ;
 > the α=1.0 run is preserved as `local_branching_levy_a10.npz`). The old movement-mode "scale-free"

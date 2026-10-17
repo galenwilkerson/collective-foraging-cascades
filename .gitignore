@@ -9,5 +9,4 @@ __pycache__/
 *.swp
 
 # Local output scratch (regenerate from code)
-theory_paper_v3/figures/*.pdf
-theory_paper_v5/figures/*.pdf
+theory_paper_v6/figures/*.pdf
