@@ -160,3 +160,22 @@ python Code/gen_homeostasis_fig.py
 ```
 
 To recompute a sweep from scratch, run the corresponding producer script in `Code/` first.
+
+## How to cite
+
+If you use this code or its results, please cite the paper:
+
+> Galen J. Wilkerson. *A general mechanism for collective foraging: percolating recruitment cascades coupled to a maximum-entropy field.* arXiv:2610.25113 (physics.soc-ph), 2026.
+
+```bibtex
+@article{wilkerson2026foraging,
+  title         = {A general mechanism for collective foraging: percolating recruitment cascades coupled to a maximum-entropy field},
+  author        = {Wilkerson, Galen J.},
+  year          = {2026},
+  eprint        = {2610.25113},
+  archivePrefix = {arXiv},
+  primaryClass  = {physics.soc-ph}
+}
+```
+
+GitHub also shows a "Cite this repository" button generated from `CITATION.cff`.

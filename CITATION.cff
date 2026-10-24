@@ -15,6 +15,5 @@ preferred-citation:
       given-names: Galen J.
       affiliation: "Komplexity AI LLC"
   year: 2026
-  # TODO: add journal/arXiv and DOI once available
-  # journal: "Physical Review E"
-  # doi: "10.xxxx/xxxxx"
+  url: "https://arxiv.org/abs/2610.25113"
+  notes: "arXiv:2610.25113 (physics.soc-ph); submitted to Physical Review E."
