@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software or its results, please cite the paper below."
-title: "Collective foraging from simple recruitment cascades"
+title: "A mechanism for collective foraging: percolating recruitment cascades coupled to a maximum-entropy field"
 authors:
   - family-names: Wilkerson
     given-names: Galen J.
@@ -9,11 +9,11 @@ repository-code: "https://github.com/galenwilkerson/collective-foraging-cascades
 license: MIT
 preferred-citation:
   type: article
-  title: "A general mechanism for collective foraging: percolating recruitment cascades coupled to a maximum-entropy field"
+  title: "A mechanism for collective foraging: percolating recruitment cascades coupled to a maximum-entropy field"
   authors:
     - family-names: Wilkerson
       given-names: Galen J.
       affiliation: "Komplexity AI LLC"
   year: 2026
-  url: "https://arxiv.org/abs/2610.25113"
-  notes: "arXiv:2610.25113 (physics.soc-ph); submitted to Physical Review E."
+  url: "https://arxiv.org/abs/2610.24865"
+  notes: "arXiv:2610.24865 (physics.soc-ph); under review at Chaos (AIP)."

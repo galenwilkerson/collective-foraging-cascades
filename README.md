@@ -1,4 +1,4 @@
-# Collective foraging from simple recruitment cascades
+# A mechanism for collective foraging:
 ### percolating recruitment cascades coupled to a maximum-entropy field
 
 Simulation code and the scripts that regenerate every figure and reported number in the paper of the
@@ -165,14 +165,14 @@ To recompute a sweep from scratch, run the corresponding producer script in `Cod
 
 If you use this code or its results, please cite the paper:
 
-> Galen J. Wilkerson. *A general mechanism for collective foraging: percolating recruitment cascades coupled to a maximum-entropy field.* arXiv:2610.25113 (physics.soc-ph), 2026.
+> Galen J. Wilkerson. *A mechanism for collective foraging: percolating recruitment cascades coupled to a maximum-entropy field.* arXiv:2610.24865 (physics.soc-ph), 2026.
 
 ```bibtex
 @article{wilkerson2026foraging,
-  title         = {A general mechanism for collective foraging: percolating recruitment cascades coupled to a maximum-entropy field},
+  title         = {A mechanism for collective foraging: percolating recruitment cascades coupled to a maximum-entropy field},
   author        = {Wilkerson, Galen J.},
   year          = {2026},
-  eprint        = {2610.25113},
+  eprint        = {2610.24865},
   archivePrefix = {arXiv},
   primaryClass  = {physics.soc-ph}
 }
