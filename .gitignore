@@ -21,3 +21,4 @@ data/
 
 # Figure outputs render into figures/ (keep the dir, not the PDFs).
 figures/*.pdf
+Code/figures/*.pdf
