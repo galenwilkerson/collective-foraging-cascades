@@ -35,6 +35,7 @@ def run(rho_r, theta, deplete, args):
     sim = MobileCascade(cfg)
     t0 = int((1.0 - args.tail) * args.T)
     acc = {k: [] for k in ["active", "blocked", "isolated", "reverted", "casc", "harv", "move", "comm"]}
+    rep = {k: [] for k in acc}                              # retain per-replica (batch) vectors each tick
     for t in range(args.T):
         sim.step()
         if t >= t0:
@@ -47,11 +48,21 @@ def run(rho_r, theta, deplete, args):
             acc["harv"].append(s["consumed"].mean().item())
             acc["move"].append(s["distance"].mean().item())
             acc["comm"].append((s["msgs_beacon"] + s["msgs_activation"]).mean().item())
+            rep["active"].append(s["active_count"].cpu().numpy())
+            rep["blocked"].append(s["blocked"].cpu().numpy())
+            rep["isolated"].append(s["isolated"].cpu().numpy())
+            rep["reverted"].append(s["reverted"].cpu().numpy())
+            rep["casc"].append(s["cascade_size"].cpu().numpy())
+            rep["harv"].append(s["consumed"].cpu().numpy())
+            rep["move"].append(s["distance"].cpu().numpy())
+            rep["comm"].append((s["msgs_beacon"] + s["msgs_activation"]).cpu().numpy())
     m = {k: float(np.mean(v)) for k, v in acc.items()}
+    mr = {k: np.mean(np.array(v), axis=0) for k, v in rep.items()}   # (B,) mean over ticks per replica
     return dict(active_frac=m["active"] / args.N, blocked_frac=m["blocked"] / args.N,
                 isolated_frac=m["isolated"] / args.N, reverted_frac=m["reverted"] / args.N,
                 casc_frac=m["casc"] / args.N, harvest=m["harv"],
-                eff=m["harv"] / max(m["move"] + m["comm"], 1e-9))
+                eff=m["harv"] / max(m["move"] + m["comm"], 1e-9),
+                blocked_frac_reps=mr["blocked"] / args.N, casc_frac_reps=mr["casc"] / args.N)
 
 
 def main():
@@ -76,6 +87,7 @@ def main():
                     default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "sweeps"))
     args = ap.parse_args()
     keys = ["active_frac", "blocked_frac", "isolated_frac", "reverted_frac", "casc_frac", "harvest", "eff"]
+    rep_keys = ["blocked_frac_reps", "casc_frac_reps"]     # per-replica arrays for uncertainty bands
     out = {}
     print(f"blocking test: rho_r={args.rhos} (z=pi*p*rho_r) x theta={args.thetas} x depletion ON/OFF",
           flush=True)
@@ -83,12 +95,15 @@ def main():
         for dep in (True, False):
             tag = f"th{theta:.2f}_{'dep' if dep else 'nodep'}"
             g = {k: np.zeros(len(args.rhos)) for k in keys}
+            gr = {k: np.zeros((len(args.rhos), args.B)) for k in rep_keys}
             print(f"--- theta={theta}  depletion={'ON' if dep else 'OFF'}  (blocking boundary z~{2/theta:.1f}) ---",
                   flush=True)
             for i, r in enumerate(args.rhos):
                 res = run(r, theta, dep, args)
                 for k in keys:
                     g[k][i] = res[k]
+                for k in rep_keys:
+                    gr[k][i] = res[k]
                 z = np.pi * args.p * r
                 print(f"  rho_r={r:5.1f} z~{z:5.1f} | active={res['active_frac']:.2f} "
                       f"BLOCKED={res['blocked_frac']:.2f} isolated={res['isolated_frac']:.2f} "
@@ -96,6 +111,8 @@ def main():
                       flush=True)
             for k in keys:
                 out[f"{tag}_{k}"] = g[k]
+            for k in rep_keys:
+                out[f"{tag}_{k}"] = gr[k]
     out["rhos"] = np.array(args.rhos); out["thetas"] = np.array(args.thetas)
     out["z"] = np.pi * args.p * np.array(args.rhos)
     os.makedirs(args.outdir, exist_ok=True)

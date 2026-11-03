@@ -93,6 +93,7 @@ def run(args):
         "frac_drained": drained / max(len(gud), 1),
         "peak_occ_mean": float(np.mean(peak_occ)) if len(peak_occ) else np.nan,
         "blocked_release_frac": float(blocked_release_frac),
+        "rev_blocked": float(rb), "rev_isolated": float(ri), "n_dep": float(rb + ri),
         "gud": gud.astype(np.float32),
         "lifecycle_occ_vs_res": lifecycle.astype(np.float32),   # mean occupancy per remaining-resource bin
         "res_bin_centers": ((np.arange(args.nbins) + 0.5) / args.nbins).astype(np.float32),

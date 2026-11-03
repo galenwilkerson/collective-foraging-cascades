@@ -10,3 +10,14 @@ __pycache__/
 
 # Local output scratch (regenerate from code)
 theory_paper_v6/figures/*.pdf
+
+# Precomputed sweep / replot data is NOT shipped -- regenerate with the gen_*/rq2_*
+# scripts, or set FLOCKING_DATA to a directory holding the .npz files.
+*.npz
+Code/sweeps/
+experiments/sweeps/
+experiments/maxent_caliber/
+data/
+
+# Figure outputs render into figures/ (keep the dir, not the PDFs).
+figures/*.pdf
