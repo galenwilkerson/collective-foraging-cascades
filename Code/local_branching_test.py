@@ -161,6 +161,7 @@ def run_setting(theta, args):
     return {
         "theta": theta,
         "sigma_aval": sigma_aval, "sigma_aval_lo": lo, "sigma_aval_hi": hi,
+        "off_sum": off_sum, "par_sum": par_sum,   # raw sums, for exact cross-chunk pooling of sigma_aval
         "sigma_aval_med": pa_med, "sigma_aval_q25": pa_iqr[0], "sigma_aval_q75": pa_iqr[1],
         "sigma_swarm": float(np.mean(sigma_swarm)),
         "per_aval_sigma": np.array(per_aval_sigma, dtype=np.float32),
