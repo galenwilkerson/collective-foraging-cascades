@@ -5,7 +5,7 @@ Controlled intervention: hold every parameter fixed and toggle only the coupling
 (a) active fraction vs time -- the coupled swarm self-limits to ~50%, the ablated swarm
     (activation without convergence) saturates toward ~100%.
 (b) steady-state distribution of active fraction -- coupled peaked near 0.5, ablated piled near 1.0.
-active fraction = 1 - exploring_fraction.  CPU.  -> theory_paper_v6/figures/fig_q3_ablation.pdf
+active fraction = 1 - exploring_fraction.  CPU.  -> figure_gen/figures/fig_q3_ablation.pdf
 """
 import os, sys
 import numpy as np, matplotlib; matplotlib.use("Agg")

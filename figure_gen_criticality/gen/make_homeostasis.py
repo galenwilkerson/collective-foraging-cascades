@@ -69,7 +69,7 @@ ax[1].legend(fontsize=9.5, loc="lower left", framealpha=0.95)
 ax[1].set_title("(b)", loc="left", fontweight="bold", fontsize=13)
 
 fig.tight_layout()
-out = os.path.join(REPO, "theory_paper_v14", "figures", "fig_homeostasis.pdf")
+out = os.path.join(REPO, "figure_gen_criticality", "figures", "fig_homeostasis.pdf")
 os.makedirs(os.path.dirname(out), exist_ok=True)
 fig.savefig(out)
 print("wrote", out)

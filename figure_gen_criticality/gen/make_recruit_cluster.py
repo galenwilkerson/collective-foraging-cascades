@@ -8,7 +8,7 @@ import os, numpy as np, matplotlib
 matplotlib.use("Agg"); import matplotlib.pyplot as plt
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 NPZ = os.path.join(REPO, "Code", "sweeps", "local_branching_levy.npz")
-OUT = os.path.join(REPO, "theory_paper_v14", "figures", "fig_recruit_cluster.pdf")
+OUT = os.path.join(REPO, "figure_gen_criticality", "figures", "fig_recruit_cluster.pdf")
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 d = np.load(NPZ)
 N = int(d["N"][0])

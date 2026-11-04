@@ -4,7 +4,7 @@ cycle in the (network/spatial density x node activity) plane -- same plane as th
 -- as a clean single clockwise loop matching the data's circulation. Four states coloured to match the
 data panel; inward arrows on the density axis show the swarm is driven to the poised window from both
 sides. The BTW-sandpile analogy: a driven-dissipative drive->avalanche->discharge->reset cycle
-self-organised to a poised attractor, on a MOBILE lattice. -> theory_paper_v6/figures/fig_cycle_schematic.pdf
+self-organised to a poised attractor, on a MOBILE lattice. -> figure_gen/figures/fig_cycle_schematic.pdf
 """
 import os, matplotlib
 matplotlib.use("Agg")
@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch, Rectangle
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.normpath(os.path.join(HERE, "..", "theory_paper_v6", "figures", "fig_cycle_schematic.pdf"))
+OUT = os.path.normpath(os.path.join(HERE, "..", "figure_gen", "figures", "fig_cycle_schematic.pdf"))
 PNG = os.path.join(os.environ.get("SCRATCH_PNG_DIR", "/tmp"), "fig_cycle_schematic.png")
 plt.rcParams.update({"font.size": 13})
 # soft fills / saturated edges+labels, to match the data panel without being gaudy

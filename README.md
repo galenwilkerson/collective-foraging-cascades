@@ -99,7 +99,7 @@ Code/
   gen_*.py                  figure generators (see map below)
   sweeps/                   precomputed sweep outputs (.npz / .csv) the generators read
 demos/                      browser demos (collective_foraging_demo.html, phase_portrait.html, entropy.html) served via Pages
-theory_paper_v6/
+figure_gen/
   gen_entropy_fig.py        entropy figure — analytic, no data
   gen_article_figs.py       phase-diagram / local-clusters / FSS / scale-free figs — read Code/sweeps/
   figures/                  output dir for regenerated figures (PDFs not committed)
@@ -111,7 +111,7 @@ experiments/
 Generators keep their original relative paths; run each from the directory it lives in.
 
 > **Figure provenance.** The generators bundled here span the figure set used in the paper; some live in
-> `theory_paper_v6/` (an earlier figure-generation snapshot) and `theory_paper_v14/gen/` (the criticality
+> `figure_gen/` (an earlier figure-generation snapshot) and `figure_gen_criticality/gen/` (the criticality
 > rework). Figure *numbers* below follow the paper and may shift between revisions.
 > The v14 criticality suite is standardized on Lévy exploration (stable index α=1.5): the canonical
 > per-avalanche branching data is `Code/sweeps/local_branching_levy.npz` (σ_local ≈ 0.83–0.99 across φ;
@@ -130,11 +130,11 @@ Python 3 with `numpy`, `matplotlib`, and `torch` (PyTorch; the model runs on CPU
 | Cascade window (inverted-U) | `Code/gen_invertedu_fig.py`            | `inverted_u_full.csv` ← `inverted_u.py` |
 | **Cascade window + self-tuning arrows (paper Fig. 2)** | `Code/gen_invertedu_selftune_fig.py` | same `inverted_u_full.csv` |
 | Mechanism schematic         | `Code/gen_mechanism_fig.py`            | schematic (no data) — **paper now uses a TikZ source (`fig_mechanism_tikz.tex`), not in this repo** |
-| Phase diagram (when it pays) | `theory_paper_v6/gen_article_figs.py` `fig_phase_diagram` | `resource_regimes.npz` ← `resource_regimes.py` |
-| Target-space entropy        | `theory_paper_v6/gen_entropy_fig.py`   | analytic (exact combinatorics) |
+| Phase diagram (when it pays) | `figure_gen/gen_article_figs.py` `fig_phase_diagram` | `resource_regimes.npz` ← `resource_regimes.py` |
+| Target-space entropy        | `figure_gen/gen_entropy_fig.py`   | analytic (exact combinatorics) |
 | **Resource-field spectrum: one interaction sign sweeps regular→CSR→clustered (SI)** | `Code/gen_beta_spectrum_fig.py` | analytic (Metropolis Gibbs point process, no data) |
 | **Sparsity amplifies the effective clustering β_eff ~ log(1/density) (SI)** | `Code/gen_beta_sparsity_fig.py` | analytic (Thomas cluster process, no data) |
-| Local clusters (SOC)        | `theory_paper_v6/gen_article_figs.py` `fig_local_clusters` | `local_soc.npz`, `local_soc_levy.npz` ← `local_soc_test.py` |
+| Local clusters (SOC)        | `figure_gen/gen_article_figs.py` `fig_local_clusters` | `local_soc.npz`, `local_soc_levy.npz` ← `local_soc_test.py` |
 | Threshold / blocking vs depletion | `Code/gen_threshold_figs.py`     | `blocking_test.py` |
 | α-regime cost               | `Code/gen_alpha_regime_fig.py`         | `cost_per_target.py` |
 | Homeostasis                 | `Code/gen_homeostasis_fig.py`          | self-contained (runs the model) |
@@ -142,8 +142,8 @@ Python 3 with `numpy`, `matplotlib`, and `torch` (PyTorch; the model runs on CPU
 | **Cycle schematic (hero, paper Fig. 1a)** | `Code/gen_cycle_schematic.py` | schematic (no data) |
 | Patch lifecycle             | `Code/gen_patch_lifecycle_fig.py`      | `patch_rw_th*.npz` ← `patch_lifecycle_test.py` |
 | Reward-proportional allocation | `Code/gen_ifd_fig.py`               | `ifd_test.npz` ← `ifd_test.py` |
-| FSS scaling                 | `theory_paper_v6/gen_article_figs.py` `fig_fss` | `fss_scaling.npz` ← `fss_scaling.py` |
-| Scale-free field            | `theory_paper_v6/gen_article_figs.py` `fig_scale_free` | `scale_free_field.npz` ← `scale_free_field.py` |
+| FSS scaling                 | `figure_gen/gen_article_figs.py` `fig_fss` | `fss_scaling.npz` ← `fss_scaling.py` |
+| Scale-free field            | `figure_gen/gen_article_figs.py` `fig_scale_free` | `scale_free_field.npz` ← `scale_free_field.py` |
 | Susceptibility (supp.)      | `Code/gen_supp_expts_fig.py` (panel a) | `local_susceptibility_test.py` |
 | Lévy field (supp.)          | `Code/gen_supp_expts_fig.py` (panel b) | `levy_field.npz` ← `levy_field_test.py` |
 | **Max-caliber optimum — search exponent tracks field (paper Fig. 12)** | `experiments/maxent_caliber/replot_stable.py` | `experiments/maxent_caliber/results.npz` ← `run_maxent_caliber.py` |
@@ -154,8 +154,8 @@ Python 3 with `numpy`, `matplotlib`, and `torch` (PyTorch; the model runs on CPU
 Data-driven figures read precomputed sweeps, so the generators run directly, e.g.:
 
 ```
-python theory_paper_v6/gen_entropy_fig.py
-python theory_paper_v6/gen_article_figs.py
+python figure_gen/gen_entropy_fig.py
+python figure_gen/gen_article_figs.py
 python Code/gen_homeostasis_fig.py
 ```
 

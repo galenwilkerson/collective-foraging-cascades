@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """RQ3 Fig 4 (fig_q3_ablation) on the CORRECTED engine -> v15/figures. Fresh compute, NO cache load
-(the Code/ version silently re-loaded a pre-correction q3_ablation.npz and wrote to theory_paper_v6).
+(the Code/ version silently re-loaded a pre-correction q3_ablation.npz and wrote to figure_gen).
 The coupling->motion intervention: hold everything fixed, toggle only `converge`. In the corrected engine
 recruited agents ALWAYS take the short step; converge only flips the heading from parent-centroid-directed
 (coupled) to random (ablated), so this is a clean DIRECTION-only ablation at fixed step size.

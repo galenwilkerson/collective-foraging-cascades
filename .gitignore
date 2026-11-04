@@ -9,7 +9,7 @@ __pycache__/
 *.swp
 
 # Local output scratch (regenerate from code)
-theory_paper_v6/figures/*.pdf
+figure_gen/figures/*.pdf
 
 # Precomputed sweep / replot data is NOT shipped -- regenerate with the gen_*/rq2_*
 # scripts, or set FLOCKING_DATA to a directory holding the .npz files.

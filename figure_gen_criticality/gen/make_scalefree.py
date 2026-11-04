@@ -6,7 +6,7 @@ import os, numpy as np, matplotlib
 matplotlib.use("Agg"); import matplotlib.pyplot as plt
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 NPZ = os.path.join(REPO, "Code", "sweeps", "scalefree_v14.npz")
-OUT = os.path.join(REPO, "theory_paper_v14", "figures", "fig_scalefree.pdf")
+OUT = os.path.join(REPO, "figure_gen_criticality", "figures", "fig_scalefree.pdf")
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 d = np.load(NPZ, allow_pickle=True)
 s = d["summary"]; beta = s[:, 1]; ratio = s[:, 2]

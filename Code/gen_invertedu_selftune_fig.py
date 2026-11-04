@@ -12,7 +12,7 @@ plt.rcParams.update({"font.size": 13, "axes.labelsize": 13, "xtick.labelsize": 1
 Z_C_RGG = 4.51; PHI = 0.15; Z_BLOCK = 2.0 / PHI; ARR = "#d1495b"
 HERE = os.path.dirname(os.path.abspath(__file__))
 SW = os.path.join(HERE, "sweeps")
-OUTS = [os.path.join(HERE, "..", "theory_paper_v6", "figures")]
+OUTS = [os.path.join(HERE, "..", "figure_gen", "figures")]
 
 rows = list(csv.DictReader(open(os.path.join(SW, "inverted_u_full.csv")))); rows.sort(key=lambda r: float(r["z_obs"]))
 z = np.array([float(r["z_obs"]) for r in rows]); cm = np.array([float(r["cascade_mean"]) for r in rows])
