@@ -1,5 +1,5 @@
 # A mechanism for collective foraging:
-### percolating recruitment cascades coupled to a maximum-entropy field
+## percolating recruitment cascades coupled to a maximum-entropy field
 
 Simulation code and the scripts that regenerate every figure and reported number in the paper of the
 same name.
